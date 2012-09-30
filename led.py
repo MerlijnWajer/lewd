@@ -57,6 +57,9 @@ class LedScreen(object):
         if type(val) not in (tuple, list) or len(val) != 3:
             raise ValueError("val should be a tuple of length 3")
 
+        if tup[0] not in range(0, self.w) or tup[1] not in range(0, self.h):
+            raise ValueError("tup should be inside the grid:", (self.w, self.h))
+
         self.tty.write(chr(reverse_led(tup)) + ''.join(map(lambda x: chr(x), val)))
 
     def __iter__(self):
