@@ -4,7 +4,6 @@ __all__ = ['transform_led', 'reverse_led']
 def transform_led(ind):
     """ Transform index to x, y. Top-left = (0, 0) """
     x = ind / 10
-    #y = ind % 10
 
     if x % 2 == 0:
         y = 9 - (ind % 10)
