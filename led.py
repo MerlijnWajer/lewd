@@ -24,11 +24,12 @@ class LedScreen(object):
 
         self.tty.write(chr(reverse_led(tup)) + ''.join(map(lambda x: chr(x), val)))
 
-screen = LedScreen()
-screen[0, 0] = (10, 10, 10)
+if __name__ == '__main__':
+    screen = LedScreen()
+    screen[0, 0] = (10, 10, 10)
 
 
-for x in range(12):
-    for y in range(10):
-        screen[(x,y)] = 25, 25, 25
+    for x in range(12):
+        for y in range(10):
+            screen[(x,y)] = 25, 25, 25
 
