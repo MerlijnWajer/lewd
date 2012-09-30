@@ -8,9 +8,9 @@ TODO:
     - Мировое господство
     - Code:
         - Make it run standalone (that is, without requiring the nodejs to
-        - set up some initial stuff)
+          set up some initial stuff)
         - Add (optional!) buffering to just send an entire frame at once,
-        - seeing led frames are mostly accessed using __setitem__
+          seeing led frames are mostly accessed using __setitem__
         - Add __iter__ support
         - Add (low-level!) networking support
         - Layer for even nicer led access?
