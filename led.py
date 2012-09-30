@@ -18,12 +18,19 @@ class LedScreen(object):
     The low-level LED wall screen.
     """
 
-    def __init__(self, fname='/dev/ttyACM0', brate=115200, dim=(12,10)):
+    def __init__(self, fname='/dev/ttyACM0', brate=115200, dim=(12,10), gamma=2.2):
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
         self.w, self.h = dim
         self.buf = [(0, 0, 0)] * 12*10
+
+        gamma = float(gamma)
+        max_gamma = 255.**gamma
+        self.gamma_map = [ int( (1 + 2 * x**gamma / (max_gamma/255.)) //2 ) for x in xrange(256) ]
+
+    def gamma_correct(self, colour):
+        return tuple(self.gamma_map[c] for c in colour)
 
     def __setitem__(self, tup, val):
         if type(tup) not in (tuple, list) or len(tup) != 2:
@@ -35,9 +42,11 @@ class LedScreen(object):
         if tup[0] not in range(0, self.w) or tup[1] not in range(0, self.h):
             raise ValueError("tup should be inside the grid:", (self.w, self.h))
 
-        self.buf[reverse_led(tup)] = val
+        self.buf[reverse_led(tup)] = self.gamma_correct(val)
 
-        #_ = self.tty.read()
+        waiting = self.tty.inWaiting()
+        if waiting > 0:
+            _ = self.tty.read(waiting)
 
     def push(self):
         for ind, val in enumerate(self.buf):
