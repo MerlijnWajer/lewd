@@ -43,6 +43,15 @@ class LedScreen(object):
         for ind, val in enumerate(self.buf):
             self.tty.write(chr(ind) + ''.join(map(lambda x: chr(x), val)))
 
+    def load_frame(self, frame):
+        for y in xrange(max(len(frame), self.h)):
+            for x in xrange(max(len(frame[y]), self.w)):
+                self[ (x, y) ] = frame[y][x]
+
+    def push_frame(self, frame):
+        self.load_frame(frame)
+        self.push()
+
     def __iter__(self):
         return LedScreenIterator(self)
 
