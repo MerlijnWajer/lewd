@@ -1,0 +1,53 @@
+import led
+import time
+import curses
+
+s = led.LedScreen()
+
+window = curses.initscr()
+curses.raw()
+curses.noecho()
+window.nodelay(True)
+
+pos = (0, 0)
+
+lastch = -1
+try:
+    while True:
+        for x in range(12):
+            for y in range(10):
+                s[(x, y)] = 25, 25, 25
+
+        s[(pos[0], pos[1])] = 255, 0, 0
+
+        f = window.getch()
+        if f == ord('q'):
+            break
+        if f != -1:
+            lastch = f
+        #f = sys.stdin.readline()[:-1]
+        if lastch == ord('w'):
+            if pos[0]+1>11:
+                pos = (0, pos[1])
+            else:
+                pos = (pos[0]+1,pos[1])
+        if lastch == ord('s'):
+            if pos[0] - 1 < 0:
+                pos = (11, pos[1])
+            else:
+                pos = ([0]-1, pos[1])
+        if lastch == ord('a'):
+            if pos[1]+1 > 9:
+                pos = (pos[0], 0)
+            else:
+                pos = (pos[0], pos[1]+1)
+        if lastch == ord('d'):
+            if pos[1]-1 < 0:
+                pos = (pos[0], 9)
+            else:
+                pos = (pos[0],pos[1]-1)
+
+        time.sleep(0.1)
+finally:
+    curses.reset_shell_mode()
+
