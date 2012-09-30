@@ -52,6 +52,7 @@ try:
             else:
                 pos = (pos[0],pos[1]-1)
 
+        s.push()
         # change this to make it slower or faster
         time.sleep(0.1)
 finally:
