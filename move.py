@@ -35,7 +35,7 @@ try:
             if pos[0] - 1 < 0:
                 pos = (11, pos[1])
             else:
-                pos = ([0]-1, pos[1])
+                pos = (pos[0]-1, pos[1])
         if lastch == ord('a'):
             if pos[1]+1 > 9:
                 pos = (pos[0], 0)
