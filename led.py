@@ -39,8 +39,9 @@ class LedScreen(object):
     def __iter__(self):
         return LedScreenIterator(self)
 
-class LedScreenIterator(ls):
-    pass
+class LedScreenIterator(object):
+    def __init__(ls):
+        pass
 
 if __name__ == '__main__':
     screen = LedScreen()
