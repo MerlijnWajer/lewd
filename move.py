@@ -1,3 +1,4 @@
+""" Simple ``move'' animation. Use w,a,s,d to move, q to stop"""
 import led
 import time
 import curses
