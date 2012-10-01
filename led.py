@@ -23,7 +23,9 @@ class LedScreen(object):
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
         self.w, self.h = dim
-        self.buf = [(0, 0, 0)] * 12*10
+        self.buf = [(0, 0, 0)] * self.w * self.h
+
+        set_transform(*dim)
 
         gamma = float(gamma)
         max_gamma = 255.**gamma
