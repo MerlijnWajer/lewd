@@ -1,28 +1,31 @@
 """ Module for the linear transform from 2D coordinate system to LED wall"""
-__all__ = ['transform_led', 'reverse_led', 'set_transform']
+__all__ = [ 'Transform' ]
 
-w, h = 0, 0
+class Transform(object):
 
-def set_transform(ww, hh):
-    w = ww
-    h = hh
+    def __init__(self, w, h):
+        self.w, self.h = w, h
 
-def transform_led(ind):
-    """ Transform index to x, y. Top-left = (0, 0) """
-    x = ind / h
+    def translate(self, ind):
+        """ Transform index to x, y. Top-left = (0, 0) """
+        w, h = self.w, self.h
+        
+        x = w-1 - ind / h
 
-    if x % 2 == 0:
-        y = (h - 1) - (ind % h)
-    else:
-        y = ind % h
+        if x % 2 == 0:
+            y = (h - 1) - (ind % h)
+        else:
+            y = ind % h
 
-    return (x, y)
+        return (x, y)
 
-def reverse_led((x, y)):
-    """ Transform (x, y) to index """
-    if x % 2 == 0:
-        ind = y + x*h
-    else:
-        ind = ((h - 1) - y) + x*h
-    return ind
+    def inverse(self, (x, y)):
+        """ Transform (x, y) to index """
+        w, h = self.w, self.h
+
+        if x % 2 == 0:
+            ind = h*(w-x-1) + y
+        else:
+            ind = h*(w-x)-1 - y
+        return ind
 
