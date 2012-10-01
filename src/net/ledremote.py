@@ -1,44 +1,22 @@
-"""Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
-
 import sys, os
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../lib/uspp'))
-
-# Python serial communication module. Get it from pypi.
-try:
-    import uspp
-except:
-    print 'Error: USPP module missing!'
-    # Do not stop, documentation parser doesn't require uspp.
-
+import socket
 from transform import Transform
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../'))
 
-__all__ = ['LedScreenException', 'LedScreen']
-
-class LedScreenException(Exception):
-    pass
-
-class LedScreen(object):
-    """
-    The low-level LED wall screen.
-    """
-
-    def __init__(self, fname='/dev/ttyACM0', brate=115200, dim=(12,10), gamma=2.2):
+class RemoteLedScreen(object):
+    def __init__(self, host, port, dim=(12,10)):
+        print "Init?"
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
-        self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
         self.w, self.h = dim
         self.buf = [(0, 0, 0)] * self.w * self.h
         self.transform = Transform(*dim)
 
-        gamma = float(gamma)
-        max_gamma = 255.**gamma
-        self.gamma_map = [ int( (1 + 2 * x**gamma / (max_gamma/255.)) //2 ) for x in xrange(256) ]
-        for i, v in enumerate(self.gamma_map):
-            if v == 254:
-                self.gamma_map[i] = 253
-
-    def gamma_correct(self, colour):
-        return tuple(self.gamma_map[c] for c in colour)
+        # We could cache a possible exception but let's leave it for now
+        #print "ohai"
+        #self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+        #print "dat sock"
+        self.sock = socket.create_connection((host, port))
 
     def __setitem__(self, tup, val):
         """
@@ -53,21 +31,16 @@ class LedScreen(object):
         if tup[0] not in range(0, self.w) or tup[1] not in range(0, self.h):
             raise ValueError("tup should be inside the grid:", (self.w, self.h))
 
-        self.buf[self.transform.inverse(tup)] = self.gamma_correct(val)
-
-        waiting = self.tty.inWaiting()
-        if waiting > 0:
-            _ = self.tty.read(waiting)
+        self.buf[self.transform.inverse(tup)] = val
 
     def push(self):
         """
         Push the current frame contents to the screen
         """
-        self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf) + chr(254) )
+        self.sock.send(''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf))
 
     def load_data(self, data):
-        self.tty.write(data + chr(254) )
-        
+        socket.send(data)
 
     def load_frame(self, frame):
         """
