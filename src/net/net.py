@@ -2,8 +2,10 @@ import asyncore
 import os, socket, json
 
 import sys, os
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '../'))
+sys.path.append('..')
 import led
+
+from itertools import izip
 
 class LEDConnection(asyncore.dispatcher_with_send):
 
@@ -14,7 +16,10 @@ class LEDConnection(asyncore.dispatcher_with_send):
     def handle_read(self):
         data = self.recv(8192)
         self.data += data
-        led.tty.write(''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.data) + chr(254))
+        #dat = izip(*(map(int, [data[::2], data[1::2],
+        #    data[2::2]])))
+        screen.load_data(''.join(map(lambda (r, g, b): ''.join([g, r, b]), izip(data[::2], data[1::2], data[2::2]))))
+        #screen.tty.write(''.join(chr(g)+chr(r)+chr(b) for r,g,b in dat) + chr(254))
 
 class HTTPServer(asyncore.dispatcher):
 
@@ -28,7 +33,9 @@ class HTTPServer(asyncore.dispatcher):
         conn, addr = self.accept()
         LEDConnection(self, conn, addr)
 
-s = HTTPServer(8002)
+
+screen = led.LedScreen()
+s = HTTPServer(8000)
 asyncore.loop()
 
 

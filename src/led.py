@@ -1,7 +1,7 @@
 """Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
 
-import sys
-sys.path.append('../lib/uspp')
+import sys, os
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../lib/uspp'))
 
 # Python serial communication module. Get it from pypi.
 try:
@@ -65,6 +65,10 @@ class LedScreen(object):
         """
         self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf) + chr(254) )
 
+    def load_data(self, data):
+        self.tty.write(data + chr(254) )
+        
+
     def load_frame(self, frame):
         """
         Load internal frame from *frame*. Does not send anything yet.
@@ -79,13 +83,6 @@ class LedScreen(object):
         """
         self.load_frame(frame)
         self.push()
-
-    def __iter__(self):
-        return LedScreenIterator(self)
-
-class LedScreenIterator(object):
-    def __init__(ls):
-        pass
 
 if __name__ == '__main__':
     screen = LedScreen()
