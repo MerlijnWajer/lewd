@@ -4,17 +4,12 @@ def color(x, y, phase, opacity):
 
     phase *= 2 * math.pi
 
-    rad, phi = cmath.polar(complex(x-5.5, y-4.5))
+    rad, phi = cmath.polar(complex(x-6, y-4))
 
-    phi /= 2.
+    r, g, b = (math.cos(-rad*.5+phase)+1.)/2, (math.cos(-rad*.5+phase+2/3.*math.pi)+1.)/2, (math.cos(-rad*.5+phase+4/3.*math.pi)+1.)/2
 
-    r, g = (math.sin( phi*2+phase*4 )+1.)/2., (math.sin(phi*2+phase)+1.)/2.
+    return int(r**2 *255*opacity),int(g**2 *255*opacity),int(b**2 *255*opacity)
 
-    b = (2. - r - g)/2.
-    if b > 1.:
-        b = 1.
-
-    return int((r**4 * opacity)*255.), int((g**4 * opacity)*255.), int((b**4 * opacity)*255.)
 
 
 class SpaceInvader(object):
@@ -56,8 +51,8 @@ class SpaceInvader(object):
         self.c += 1
         self.c %= len(self.sprite*5)
         self.p += 1
-        self.p %= 512
-        phase = self.p/512.
+        self.p %= 64
+        phase = self.p/64.
         return [ [ color(x, y, phase, self.sprite[int(self.c/5)][y][x]) for x in xrange(self.w) ] for y in xrange(self.h) ]
 
 animations = [ SpaceInvader ]
