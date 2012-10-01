@@ -1,6 +1,6 @@
 """ Simple ``move'' animation. Use w,a,s,d to move, q to stop"""
 import led
-import time
+import sync
 import curses
 
 s = led.LedScreen()
@@ -13,6 +13,10 @@ window.nodelay(True)
 pos = (0, 0)
 
 lastch = -1
+
+metronome = sync.Metronome(fps=25.)
+metronome.start()
+
 try:
     while True:
         for x in range(12):
@@ -53,8 +57,9 @@ try:
                 pos = (pos[0],pos[1]-1)
 
         s.push()
-        # change this to make it slower or faster
-        time.sleep(0.1)
+
+        metronome.sync()
+
 finally:
     curses.reset_shell_mode()
 

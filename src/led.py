@@ -10,7 +10,7 @@ except:
     print 'Error: USPP module missing!'
     # Do not stop, documentation parser doesn't require uspp.
 
-from transform import transform_led, reverse_led
+from transform import Transform
 
 __all__ = ['LedScreenException', 'LedScreen']
 
@@ -28,12 +28,14 @@ class LedScreen(object):
         self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
         self.w, self.h = dim
         self.buf = [(0, 0, 0)] * self.w * self.h
-
-        set_transform(*dim)
+        self.transform = Transform(*dim)
 
         gamma = float(gamma)
         max_gamma = 255.**gamma
         self.gamma_map = [ int( (1 + 2 * x**gamma / (max_gamma/255.)) //2 ) for x in xrange(256) ]
+        for i, v in enumerate(self.gamma_map):
+            if v == 254:
+                self.gamma_map[i] = 253
 
     def gamma_correct(self, colour):
         return tuple(self.gamma_map[c] for c in colour)
@@ -51,7 +53,7 @@ class LedScreen(object):
         if tup[0] not in range(0, self.w) or tup[1] not in range(0, self.h):
             raise ValueError("tup should be inside the grid:", (self.w, self.h))
 
-        self.buf[reverse_led(tup)] = self.gamma_correct(val)
+        self.buf[self.transform.inverse(tup)] = self.gamma_correct(val)
 
         waiting = self.tty.inWaiting()
         if waiting > 0:
@@ -61,8 +63,7 @@ class LedScreen(object):
         """
         Push the current frame contents to the screen
         """
-        for ind, val in enumerate(self.buf):
-            self.tty.write(chr(ind) + ''.join(map(lambda x: chr(x), val)))
+        self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf) + chr(254) )
 
     def load_frame(self, frame):
         """
