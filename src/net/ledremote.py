@@ -65,4 +65,3 @@ if __name__ == '__main__':
             screen[(x,y)] = 25, 25, 25
 
     screen.push()
-

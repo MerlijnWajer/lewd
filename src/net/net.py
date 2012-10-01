@@ -3,7 +3,11 @@ import os, socket, json
 
 import sys, os
 sys.path.append('..')
-import led
+import led, transform
+
+transform = transform.Transform(12, 10)
+
+from itertools import izip
 
 from itertools import izip
 
@@ -16,10 +20,25 @@ class LEDConnection(asyncore.dispatcher_with_send):
     def handle_read(self):
         data = self.recv(8192)
         self.data += data
-        #dat = izip(*(map(int, [data[::2], data[1::2],
-        #    data[2::2]])))
-        screen.load_data(''.join(map(lambda (r, g, b): ''.join([g, r, b]), izip(data[::2], data[1::2], data[2::2]))))
-        #screen.tty.write(''.join(chr(g)+chr(r)+chr(b) for r,g,b in dat) + chr(254))
+        if len(self.data) <= 12*10*3:
+            return
+
+        td = self.data[:12*10*3]
+        #dat = ''.join(map(lambda (r, g, b): ''.join([g, r, b]), \
+        #    izip(td[::2], td[1::2], td[2::2])))
+
+        dat = zip(td[::3], td[1::3], td[2::3])
+
+        i = 0
+        for t in dat:
+            r, g, b = map(ord, t)
+            x, y = transform.translate(i)
+            screen[x, y] = (r, g, b)
+
+            i += 1
+
+        screen.push()
+        self.data = self.data[(12*10*3):]
 
 class HTTPServer(asyncore.dispatcher):
 
