@@ -1,10 +1,14 @@
 """Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
 
 import sys
-sys.path.append('uspp')
+sys.path.append('../lib/uspp')
 
 # Python serial communication module. Get it from pypi.
-import uspp
+try:
+    import uspp
+except:
+    print 'Error: USPP module missing!'
+    # Do not stop, documentation parser doesn't require uspp.
 
 from transform import transform_led, reverse_led
 
@@ -35,6 +39,9 @@ class LedScreen(object):
         return tuple(self.gamma_map[c] for c in colour)
 
     def __setitem__(self, tup, val):
+        """
+        Allows for easy frame access.
+        """
         if type(tup) not in (tuple, list) or len(tup) != 2:
             raise ValueError("tup should be a tuple of length 2")
 
@@ -51,15 +58,24 @@ class LedScreen(object):
             _ = self.tty.read(waiting)
 
     def push(self):
+        """
+        Push the current frame contents to the screen
+        """
         for ind, val in enumerate(self.buf):
             self.tty.write(chr(ind) + ''.join(map(lambda x: chr(x), val)))
 
     def load_frame(self, frame):
+        """
+        Load internal frame from *frame*. Does not send anything yet.
+        """
         for y in xrange(max(len(frame), self.h)):
             for x in xrange(max(len(frame[y]), self.w)):
                 self[ (x, y) ] = frame[y][x]
 
     def push_frame(self, frame):
+        """
+        Push a frame to the screen
+        """
         self.load_frame(frame)
         self.push()
 
@@ -72,8 +88,6 @@ class LedScreenIterator(object):
 
 if __name__ == '__main__':
     screen = LedScreen()
-    screen[0, 0] = (10, 10, 10)
-
 
     for x in range(12):
         for y in range(10):
