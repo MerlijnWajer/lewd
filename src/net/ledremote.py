@@ -37,7 +37,7 @@ class RemoteLedScreen(object):
         """
         Push the current frame contents to the screen
         """
-        self.sock.send(''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf))
+        self.sock.send(''.join(chr(r)+chr(g)+chr(b) for r,g,b in self.buf))
 
     def load_data(self, data):
         socket.send(data)
