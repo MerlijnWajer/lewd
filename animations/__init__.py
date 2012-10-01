@@ -4,7 +4,7 @@ import sys,os
 print __file__
 sys.path.insert(0, os.path.dirname(__file__))
 
-__all__ = [ "fire", "gameoflife", "spaceinvader", "scrollimage", "munch", "wobbleinvader", "wobble" ]
+__all__ = [ "fire", "gameoflife", "spaceinvader", "scrollimage", "munch", "wobbleinvader", "wobble", "lsdwall" ]
 
 
 animations = []
