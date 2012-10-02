@@ -10,7 +10,7 @@ import ledremote
 import animations
 animations = [ x(12, 10) for x in animations.animations ]
 
-s = ledremote.RemoteLedScreen()
+s = ledremote.RemoteLedScreen('nodejs', 8000)
 
 window = curses.initscr()
 curses.raw()

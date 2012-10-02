@@ -7,10 +7,6 @@ import led, transform
 
 transform = transform.Transform(12, 10)
 
-from itertools import izip
-
-from itertools import izip
-
 class LEDConnection(asyncore.dispatcher_with_send):
 
     def __init__(self, conn, sock, addr):
@@ -23,24 +19,10 @@ class LEDConnection(asyncore.dispatcher_with_send):
         if len(self.data) <= 12*10*3:
             return
 
-        td = self.data[:12*10*3]
-        #dat = ''.join(map(lambda (r, g, b): ''.join([g, r, b]), \
-        #    izip(td[::2], td[1::2], td[2::2])))
-
-        dat = zip(td[::3], td[1::3], td[2::3])
-
-        i = 0
-        for t in dat:
-            r, g, b = map(ord, t)
-            x, y = transform.translate(i)
-            screen[x, y] = (r, g, b)
-
-            i += 1
-
-        screen.push()
+        screen.push_data(self.data[:12*10*3])
         self.data = self.data[(12*10*3):]
 
-class HTTPServer(asyncore.dispatcher):
+class SocketServer(asyncore.dispatcher):
 
     def __init__(self, port):
         asyncore.dispatcher.__init__(self)
@@ -54,7 +36,7 @@ class HTTPServer(asyncore.dispatcher):
 
 
 screen = led.LedScreen()
-s = HTTPServer(8000)
+s = SocketServer(8000)
 asyncore.loop()
 
 

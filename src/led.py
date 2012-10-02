@@ -77,11 +77,42 @@ Push the current frame contents to the screen
         self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf) + chr(254) )
 
     def load_data(self, data):
-        self.tty.write(data + chr(254) )
+        """
+Load byte array to framebuffer. Does not send anything yet.
+        """
+        for i in xrange( min( len(data)/3, self.w*self.h ) ):
+            x, y = i % self.w, i // self.w
+            self[ (x, y) ] = tuple( ord(x) for x in data[i*3:(i+1)*3] )
+
+    def push_data(self, data):
+        """
+Push byte array to the screen.
+        """
+        self.load_data(data)
+        self.push()
 
     def load_frame(self, frame):
         """
-Load internal frame from *frame*. Does not send anything yet.
+Load three-dimensional array to framebuffer. Does not send anything yet.
+
+>>> _ = (0,0,0)   # black
+>>> X = (0,255,0) # green
+
+>>> frame = [
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+...     [_,_,_,X,_,_,_,_,_,X,_,_,],
+...     [_,_,_,_,X,_,_,_,X,_,_,_,],
+...     [_,_,_,X,X,X,X,X,X,X,_,_,],
+...     [_,_,X,X,_,X,X,X,_,X,X,_,],
+...     [_,X,X,X,X,X,X,X,X,X,X,X,],
+...     [_,X,_,X,X,X,X,X,X,X,_,X,],
+...     [_,X,_,X,_,_,_,_,_,X,_,X,],
+...     [_,_,_,_,X,X,_,X,X,_,_,_,],
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+... ],
+
+>>> screen.load_frame(frame) # doesn't write yet
+>>> screen.push()            # display
         """
         for y in xrange(max(len(frame), self.h)):
             for x in xrange(max(len(frame[y]), self.w)):
@@ -89,7 +120,25 @@ Load internal frame from *frame*. Does not send anything yet.
 
     def push_frame(self, frame):
         """
-Push a frame to the screen
+Push a three-dimensional array to the screen
+
+>>> _ = (0,0,0)   # black
+>>> X = (0,255,0) # green
+
+>>> frame = [
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+...     [_,_,_,X,_,_,_,_,_,X,_,_,],
+...     [_,_,_,_,X,_,_,_,X,_,_,_,],
+...     [_,_,_,X,X,X,X,X,X,X,_,_,],
+...     [_,_,X,X,_,X,X,X,_,X,X,_,],
+...     [_,X,X,X,X,X,X,X,X,X,X,X,],
+...     [_,X,_,X,X,X,X,X,X,X,_,X,],
+...     [_,X,_,X,_,_,_,_,_,X,_,X,],
+...     [_,_,_,_,X,X,_,X,X,_,_,_,],
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+... ],
+
+>>> screen.push_frame(frame) # display invader
         """
         self.load_frame(frame)
         self.push()

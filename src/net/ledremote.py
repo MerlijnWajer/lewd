@@ -15,8 +15,7 @@ Usage:
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.w, self.h = dim
-        self.buf = [(0, 0, 0)] * self.w * self.h
-        self.transform = Transform(*dim)
+        self.buf = bytearray('\0' * self.w * self.h * 3)
 
         #self.sock = socket.create_connection((host, port))
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,10 +34,14 @@ Use like:
         if type(val) not in (tuple, list) or len(val) != 3:
             raise ValueError("val should be a tuple of length 3")
 
-        if tup[0] not in range(0, self.w) or tup[1] not in range(0, self.h):
+        x, y = tup
+
+        if not 0 <= x < self.w and not 0 <= y < self.h:
             raise ValueError("tup should be inside the grid:", (self.w, self.h))
 
-        self.buf[self.transform.inverse(tup)] = val
+        i = x+y*self.w
+        r, g, b = val
+        self.buf[i*3:i*3+3] = chr(r) + chr(g) + chr(b)
 
     def push(self):
         """
@@ -46,10 +49,11 @@ Push the current frame contents to the screen.
 
 >>> screen.push()
         """
-        self.sock.send(''.join(chr(r)+chr(g)+chr(b) for r,g,b in self.buf))
+        self.sock.send(self.buf)
 
     def load_data(self, data):
-        socket.send(data)
+        l = max(len(data), len(self.data))
+        self.data[:l] = data
 
     def load_frame(self, frame):
         """
