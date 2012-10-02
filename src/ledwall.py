@@ -1,15 +1,16 @@
-import led
 import sync
 import curses
 import sys
 
 sys.path.append('..')
+sys.path.append('net')
+import ledremote
 
 
 import animations
 animations = [ x(12, 10) for x in animations.animations ]
 
-s = led.LedScreen()
+s = ledremote.RemoteLedScreen()
 
 window = curses.initscr()
 curses.raw()

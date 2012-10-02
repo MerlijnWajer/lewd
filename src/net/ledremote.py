@@ -18,11 +18,9 @@ Usage:
         self.buf = [(0, 0, 0)] * self.w * self.h
         self.transform = Transform(*dim)
 
-        # We could cache a possible exception but let's leave it for now
-        #print "ohai"
-        #self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-        #print "dat sock"
-        self.sock = socket.create_connection((host, port))
+        #self.sock = socket.create_connection((host, port))
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((host, port))
 
     def __setitem__(self, tup, val):
         """

@@ -24,7 +24,7 @@ transform.
         else:
             y = ind % h
 
-        return (x, y)
+        return (x, (h - 1) -y)
 
     def inverse(self, (x, y)):
         """ Transform (x, y) to index """

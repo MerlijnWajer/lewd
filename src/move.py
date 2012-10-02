@@ -5,10 +5,7 @@ import curses
 
 s = led.LedScreen()
 
-window = curses.initscr()
-curses.raw()
-curses.noecho()
-window.nodelay(True)
+ci = CursesInput()
 
 pos = (0, 0)
 
@@ -26,31 +23,30 @@ try:
         # Set our pos
         s[(pos[0], pos[1])] = 255, 0, 0
 
-        # get ch, if -1, then no char is available
-        f = window.getch()
+        f = ci.poll()
         # quit if f == q
-        if f == ord('q'):
+        if f == 'q':
             break
 
         if f != -1:
             lastch = f
 
-        if lastch == ord('w'):
+        if lastch == 'w':
             if pos[0]+1>11:
                 pos = (0, pos[1])
             else:
                 pos = (pos[0]+1,pos[1])
-        elif lastch == ord('s'):
+        elif lastch == 's':
             if pos[0] - 1 < 0:
                 pos = (11, pos[1])
             else:
                 pos = (pos[0]-1, pos[1])
-        elif lastch == ord('a'):
+        elif lastch == 'a':
             if pos[1]+1 > 9:
                 pos = (pos[0], 0)
             else:
                 pos = (pos[0], pos[1]+1)
-        elif lastch == ord('d'):
+        elif lastch == 'd':
             if pos[1]-1 < 0:
                 pos = (pos[0], 9)
             else:
