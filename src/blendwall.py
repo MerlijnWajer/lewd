@@ -22,7 +22,7 @@ metronome = sync.Metronome(fps)
 metronome.start()
 
 start = time.time()
-delay, blendtime = 120, 10
+delay, blendtime = 20, 10
 
 delay_frames, blend_frames = int(delay*fps), int(blendtime*fps)
 
