@@ -1,18 +1,14 @@
 """ Simple ``move'' animation. Use w,a,s,d to move, q to stop"""
 #import led
 import sync
-import curses
+from ext import CursesInput
 __import__('sys').path.append('./net')
 import ledremote
 
 #s = led.LedScreen()
 s = ledremote.RemoteLedScreen('nodejs', 8000)
-print s
 
-window = curses.initscr()
-curses.raw()
-curses.noecho()
-window.nodelay(True)
+ci = CursesInput()
 
 pos = (0, 0)
 
@@ -30,31 +26,30 @@ try:
         # Set our pos
         s[(pos[0], pos[1])] = 255, 0, 0
 
-        # get ch, if -1, then no char is available
-        f = window.getch()
-        # quit if f == q
-        if f == ord('q'):
-            break
+        f = ci.poll()
 
-        if f != -1:
+        if f != None:
             lastch = f
 
-        if lastch == ord('w'):
+        if f == 'q':
+            break
+
+        if lastch == 'w':
             if pos[0]+1>11:
                 pos = (0, pos[1])
             else:
                 pos = (pos[0]+1,pos[1])
-        elif lastch == ord('s'):
+        elif lastch == 's':
             if pos[0] - 1 < 0:
                 pos = (11, pos[1])
             else:
                 pos = (pos[0]-1, pos[1])
-        elif lastch == ord('a'):
+        elif lastch == 'a':
             if pos[1]+1 > 9:
                 pos = (pos[0], 0)
             else:
                 pos = (pos[0], pos[1]+1)
-        elif lastch == ord('d'):
+        elif lastch == 'd':
             if pos[1]-1 < 0:
                 pos = (pos[0], 9)
             else:
@@ -65,5 +60,5 @@ try:
         metronome.sync()
 
 finally:
-    curses.reset_shell_mode()
+    del ci
 
