@@ -12,12 +12,9 @@ Contents:
     :maxdepth: 2
 
     intro
-
-    net/ledremote
-    net/net
-
-    low/led
-    low/arduino
+    net
+    examples
+    low
 
 
 

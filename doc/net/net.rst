@@ -23,7 +23,7 @@ bytes than the arduino can handle, so don't do that. (Max should be 25fps)
 
 
 Multiple instances sending frames
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Right now, if several clients are sending data to the server; it will simply
 pass each frame (of each client) to the arduino. Which means the arduino will
