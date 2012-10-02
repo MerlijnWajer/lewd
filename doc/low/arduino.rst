@@ -7,10 +7,10 @@ Protocol
 --------
 
 Protocol is simple. Write bytes to the serial /dev/ttyACM0 file.
-Each led is three bytes. Format is *Green* *Red* *Blue* (in that order).
+Each led is three bytes. Format is **Green** **Red** **Blue** (in that order).
 
-To jump back to the start, write the byte 254. (This is not a problem since the
-gamma correction will never return 254 for any colour component.
+To jump back to the start, write the byte 254 (This is not a problem since the
+gamma correction will never return 254 for any colour component).
 
 Code
 ----
