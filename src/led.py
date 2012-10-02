@@ -19,10 +19,15 @@ class LedScreenException(Exception):
 
 class LedScreen(object):
     """
-    The low-level LED wall screen.
+The low-level LED wall screen.
     """
 
     def __init__(self, fname='/dev/ttyACM0', brate=115200, dim=(12,10), gamma=2.2):
+        """
+Initialise a LedScreen object.
+
+>>> screen = LedScreen()
+        """
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
@@ -38,11 +43,17 @@ class LedScreen(object):
                 self.gamma_map[i] = 253
 
     def gamma_correct(self, colour):
+        """
+Returns gamma-corrected colour.
+        """
         return tuple(self.gamma_map[c] for c in colour)
 
     def __setitem__(self, tup, val):
         """
-        Allows for easy frame access.
+Allows for easy frame access.
+Use like:
+
+>>> screen[(x, y)] = r, g, b
         """
         if type(tup) not in (tuple, list) or len(tup) != 2:
             raise ValueError("tup should be a tuple of length 2")
@@ -61,17 +72,16 @@ class LedScreen(object):
 
     def push(self):
         """
-        Push the current frame contents to the screen
+Push the current frame contents to the screen
         """
         self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.buf) + chr(254) )
 
     def load_data(self, data):
         self.tty.write(data + chr(254) )
-        
 
     def load_frame(self, frame):
         """
-        Load internal frame from *frame*. Does not send anything yet.
+Load internal frame from *frame*. Does not send anything yet.
         """
         for y in xrange(max(len(frame), self.h)):
             for x in xrange(max(len(frame[y]), self.w)):
@@ -79,7 +89,7 @@ class LedScreen(object):
 
     def push_frame(self, frame):
         """
-        Push a frame to the screen
+Push a frame to the screen
         """
         self.load_frame(frame)
         self.push()
