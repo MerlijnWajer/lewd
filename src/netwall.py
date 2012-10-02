@@ -3,12 +3,14 @@ import curses
 import sys
 
 sys.path.append('..')
-import led
+sys.path.append('net')
+import ledremote
+
 
 import animations
 animations = [ x(12, 10) for x in animations.animations ]
 
-s = led.LedScreen()
+s = ledremote.RemoteLedScreen('nodejs', 8000)
 
 window = curses.initscr()
 curses.raw()
