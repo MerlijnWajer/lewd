@@ -5,7 +5,13 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../'))
 
 class RemoteLedScreen(object):
     def __init__(self, host, port, dim=(12,10)):
-        print "Init?"
+        """
+Set Host and Port to where the net.py server is running.
+
+Usage:
+
+>>> screen = RemoteLedScreen('wallserver', 8000)
+        """
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.w, self.h = dim
@@ -20,7 +26,10 @@ class RemoteLedScreen(object):
 
     def __setitem__(self, tup, val):
         """
-        Allows for easy frame access.
+Allows for easy frame access.
+Use like:
+
+>>> screen[(x, y)] = r, g, b
         """
         if type(tup) not in (tuple, list) or len(tup) != 2:
             raise ValueError("tup should be a tuple of length 2")
@@ -35,7 +44,9 @@ class RemoteLedScreen(object):
 
     def push(self):
         """
-        Push the current frame contents to the screen
+Push the current frame contents to the screen.
+
+>>> screen.push()
         """
         self.sock.send(''.join(chr(r)+chr(g)+chr(b) for r,g,b in self.buf))
 
@@ -44,7 +55,8 @@ class RemoteLedScreen(object):
 
     def load_frame(self, frame):
         """
-        Load internal frame from *frame*. Does not send anything yet.
+Load internal frame from *frame*. Does not send anything yet.
+Frame is a two dimensional array.
         """
         for y in xrange(max(len(frame), self.h)):
             for x in xrange(max(len(frame[y]), self.w)):
@@ -52,13 +64,13 @@ class RemoteLedScreen(object):
 
     def push_frame(self, frame):
         """
-        Push a frame to the screen
+Push a frame to the screen
         """
         self.load_frame(frame)
         self.push()
 
 if __name__ == '__main__':
-    screen = LedScreen()
+    screen = RemoteLedScreen('nosejs', 8000)
 
     for x in range(12):
         for y in range(10):

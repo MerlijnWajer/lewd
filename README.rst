@@ -7,13 +7,17 @@ Initially written in Python, may port to go soon.
 TODO:
     - Мировое господство
     - Code:
-        - Add __iter__ support
-        - Add (low-level!) networking support (byte arrays)
         - Layer for even nicer led access?
+        - Add higher-level APIs
 
-    - Document API(s) ( Done using sphinx: http://sphinx.pocoo.org )
+    - Create multiplayer concept where frames are merged / managed.
+
     - TUI when serial/led communication is not available for testing.
       (Note to self: MINOS)
+
+Experimental:
+    - Documentation: done using sphinx: http://sphinx.pocoo.org
+    - Tweak low-level networking code transform
 
 
 Future ideas:

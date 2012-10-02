@@ -2,14 +2,21 @@
 __all__ = [ 'Transform' ]
 
 class Transform(object):
+    """
+Transform class to transform a RGB led index to x and y plus the reverse
+transform.
 
-    def __init__(self, w, h):
+>>> t = Transform()
+>>> print t.translate(10)
+    """
+
+    def __init__(self, w=12, h=10):
         self.w, self.h = w, h
 
     def translate(self, ind):
         """ Transform index to x, y. Top-left = (0, 0) """
         w, h = self.w, self.h
-        
+
         x = w-1 - ind / h
 
         if x % 2 == 0:
