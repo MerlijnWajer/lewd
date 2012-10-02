@@ -15,7 +15,7 @@ Usage:
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
         self.w, self.h = dim
-        self.buf = bytearray('\0' * self.w * self.h * 3)
+        self.buf = ['\0'] * self.w * self.h * 3
 
         #self.sock = socket.create_connection((host, port))
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,7 +49,7 @@ Push the current frame contents to the screen.
 
 >>> screen.push()
         """
-        self.sock.send(self.buf)
+        self.sock.send(''.join(self.buf))
 
     def load_data(self, data):
         l = max(len(data), len(self.data))
