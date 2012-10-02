@@ -16,23 +16,22 @@ def scrollimage_class(imgfile):
             self.i = 0
             image = Image.open(os.path.dirname(__file__)+'/'+imgfile)
             image = image.convert(mode='RGB')
-            self.img_width, _ = image.size
+            self.img_width, self.img_height = image.size
             image = image.crop( (0, 0, self.img_width, h) )
             self.data = image.getdata()
             self.b = False
 
         def next(self):
-            frame = [ [ self.data[self.i+x+y*self.img_width] for x in xrange(self.w) ]
-                                                             for y in xrange(self.h) ]
+            frame = [ [ self.data[(self.i+x)         %self.img_width+
+                                  (y%self.img_height)*self.img_width]
+                        for x in xrange(self.w) ]
+                        for y in xrange(self.h) ]
 
             self.b = not self.b
 
-            if self.b:
+            if self.b and self.w != self.img_width:
                 self.i+=1
-                if self.img_width-self.w > 0:
-                    self.i %= self.img_width-self.w
-                else:
-                    self.i = 0
+                self.i %= self.img_width
 
             return frame
 
