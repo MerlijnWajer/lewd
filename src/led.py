@@ -1,6 +1,6 @@
 """Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
 
-import sys, os
+import sys, os, time
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/../lib/uspp'))
 
 # Python serial communication module. Get it from pypi.
@@ -22,7 +22,7 @@ class LedScreen(object):
 The low-level LED wall screen.
     """
 
-    def __init__(self, fname='/dev/ttyACM0', brate=115200, dim=(12,10), gamma=2.2):
+    def __init__(self, fname='/dev/ttyACM0', brate=1000000, dim=(12,10), gamma=2.2):
         """
 Initialise a LedScreen object.
 
@@ -30,7 +30,10 @@ Initialise a LedScreen object.
         """
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
-        self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
+        self.tty = uspp.SerialPort(fname, timeout=0)
+        #self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
+        os.environ['LEDWALL_TTY'] = fname
+        os.system("stty -F $LEDWALL_TTY " + str(brate))
         self.w, self.h = dim
         self.buf = [(0, 0, 0)] * self.w * self.h
         self.transform = Transform(*dim)

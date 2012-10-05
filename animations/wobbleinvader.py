@@ -49,10 +49,10 @@ class SpaceInvader(object):
 
     def next(self):
         self.c += 1
-        self.c %= len(self.sprite*5)
+        self.c %= len(self.sprite*25)
         self.p += 1
         self.p %= 64
         phase = self.p/64.
-        return [ [ color(x, y, phase, self.sprite[int(self.c/5)][y][x]) for x in xrange(self.w) ] for y in xrange(self.h) ]
+        return [ [ color(x, y, phase, self.sprite[int(self.c/25)][y][x]) for x in xrange(self.w) ] for y in xrange(self.h) ]
 
 animations = [ SpaceInvader ]
