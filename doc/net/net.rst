@@ -15,8 +15,20 @@ The protocol is trivial:
     * Open a connection
 
     * Repeat:
-        - Write width * height * 3 bytes, rgb order. (R, G, B values range from
-          0 to 255)
+        -   Write width * height * 3 bytes, rgb order. (R, G, B values range from
+            0 to 255)
+            Pixels start (0, 0), which is the top-right corner of the led
+            wall (and this the top-left corner when you are outside).
+
+            Send like this:
+
+            .. code-block:: python
+
+                for y in range(0, h):
+                    for x in range(0, w):
+                        socket.write(pixels[x, y])
+
+
 
 That's it. Right now the server doesn't drop the buffer when you're sending more
 bytes than the arduino can handle, so don't do that. (Max should be 25fps)
