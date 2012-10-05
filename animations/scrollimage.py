@@ -7,6 +7,7 @@ imgfiles = [
     ("imgs/technologiaincognita.png" , RIGHT , 3),
     ("imgs/techinc-ad2.png"          , RIGHT , 3),
     ("imgs/techinc.png"              , RIGHT , 3),
+    ("imgs/smile.png"                , RIGHT , 0),
 #    ("imgs/test3.png"                , RIGHT , 3),
 ]
 
