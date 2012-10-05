@@ -8,6 +8,7 @@ imgfiles = [
     ("imgs/techinc-ad2.png"          , RIGHT , 3),
     ("imgs/techinc.png"              , RIGHT , 3),
     ("imgs/smile.png"                , 0 , 1),
+    ("imgs/glider.png"                , 0 , 1),
 #    ("imgs/test3.png"                , RIGHT , 3),
 ]
 
