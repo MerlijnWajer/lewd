@@ -6,7 +6,7 @@ __import__('sys').path.append('./net')
 import ledremote
 
 #s = led.LedScreen()
-s = ledremote.RemoteLedScreen('nodejs', 8000)
+s = ledremote.RemoteLedScreen('ledwall', 8000)
 
 ci = CursesInput()
 

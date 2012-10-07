@@ -15,6 +15,8 @@ class Fire:
             g = 1.
         if b > 1.:
             b = 1.
+        if (r, g, b) == (1., 1., 1.):
+            r,g,b = 0.,0.,0.
         return int(r*255),int(g*255),int(b*255)
 
     def next(self):
