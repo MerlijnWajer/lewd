@@ -42,9 +42,12 @@ def animate_blend(s, ani1, ani2, numframes):
         s.push_frame(blend(ani1.next(), ani2.next(), i/float(numframes)))
         metronome.sync()
 
+locked = False
+
 try:
     while True:
-        c+=1
+        if not locked:
+            c+=1
 
         f = keyevents.poll()
 
@@ -70,6 +73,9 @@ try:
             current %= len(animations)
             animate_blend(s, animations[last], animations[current], blend_frames)
             c=0
+
+        elif f == 'l':
+            locked = not locked
 
         s.push_frame(animations[current].next())
 
