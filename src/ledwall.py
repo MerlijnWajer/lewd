@@ -14,7 +14,7 @@ animations = [ x(12, 10) for x in animations.animations ]
 if len(sys.argv) > 1 and sys.argv[1] == '-net':
     sys.path.append('net')
     import ledremote
-    s = ledremote.RemoteLedScreen('nodejs', 8000)
+    s = ledremote.RemoteLedScreen('ledwall', 8000)
 else:
     import led
     s = led.LedScreen()
