@@ -31,7 +31,7 @@ The protocol is trivial:
 
 
 That's it. Right now the server doesn't drop the buffer when you're sending more
-bytes than the arduino can handle, so don't do that. (Max should be 25fps)
+bytes than the arduino can handle, so don't do that. (Max should be 150fps)
 
 
 Multiple instances sending frames
