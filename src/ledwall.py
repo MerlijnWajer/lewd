@@ -8,10 +8,31 @@ keyevents = ext.input.CursesInput()
 
 sys.path.append('..')
 
-import animations
-animations = [ x(12, 10) for x in animations.animations ]
+all_animations = True
+use_socket = False
 
-if len(sys.argv) > 1 and sys.argv[1] == '-net':
+for arg in sys.argv[1:]:
+    if arg == '-net':
+        use_socket = True
+    if arg == '-select':
+        all_animations = False
+
+import animations
+
+if all_animations:
+    animations = [ x(12, 10) for x in animations.animations ]
+else:
+    animations = [
+        animations.wobble.Wobble(12, 10),
+        animations.drops.Drops(12, 10),
+        animations.fire.Fire(12, 10),
+        animations.plasma.Plasma(12, 10),
+        animations.fire.Fire(12, 10),
+        animations.lsdwall.Wobble(12, 10),
+        animations.drops.Drops(12, 10),
+    ]
+
+if use_socket:
     sys.path.append('net')
     import ledremote
     s = ledremote.RemoteLedScreen('ledwall', 8000)
@@ -32,7 +53,7 @@ def blend(frame1, frame2, d):
 current = 0
 c = 0;
 
-wait_time, blend_time, shift_time = 30, 3, .5
+wait_time, blend_time, shift_time = 20, 5, .5
 wait_frames = int(wait_time*fps)
 blend_frames = int(blend_time*fps)
 shift_frames = int(shift_time*fps)
