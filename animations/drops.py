@@ -2,8 +2,8 @@ import numpy as np
 import random as rd
 import scipy.ndimage as nd
 
-treshold = 0.5
-circleupdatefreq = 0.4
+treshold = 1.
+circleupdatefreq = 0.8
 updatefreq = 0.11
 colors = [  [255, 0, 0],
             [0, 255, 0],
@@ -43,16 +43,18 @@ class Drops(object):
         return
 
     def __init__(self, w, h):
-        self.w, self.h = w, h
+        self.w, self.h = w*2, h*2
         self.background = [0, 0, 0]
-        self.basisgrid = np.ones((h, w, 3))
-        self.grid = np.ones((h, w, 3))
+        self.basisgrid = np.ones((self.h, self.w, 3))
+        self.grid = np.ones((self.h, self.w, 3))
         self.basisgrid = self.basisgrid[::] * self.background
         self.drops = []
 
     def next(self):
         self.addDrops()
-        return [ [ map(int, tuple(map(lambda x: min(x, 255), self.grid[y][x])))\
-                    for x in xrange(self.w) ] for y in xrange(self.h) ]
+		
+        scaled = nd.interpolation.zoom(self.grid, (.5, .5, 1))
+        return [ [ map(int, tuple(map(lambda x: min(x, 255), scaled[y][x])))\
+                    for x in xrange(self.w/2) ] for y in xrange(self.h/2) ]
 
 animations = [ Drops ]
