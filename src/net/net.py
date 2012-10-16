@@ -16,11 +16,11 @@ class LEDConnection(asyncore.dispatcher_with_send):
     def handle_read(self):
         data = self.recv(12*10*3)
         self.data += data
-        if len(self.data) <= 12*10*3:
+        if len(self.data) < 12*10*3:
             return
 
         screen.push_data(self.data[:12*10*3])
-        self.data = self.data[(12*10*3):]
+        self.data = self.data[12*10*3:]
 
 class SocketServer(asyncore.dispatcher):
 
