@@ -24,15 +24,15 @@ transform.
         else:
             y = ind % h
 
-        return (x, (h - 1) -y)
+        return (w-x-1, (h - 1) -y)
 
     def inverse(self, (x, y)):
         """ Transform (x, y) to index """
         w, h = self.w, self.h
 
         if x % 2 == 0:
-            ind = h*(w-x-1) + y
+            ind = h*(x+1)-1 - y
         else:
-            ind = h*(w-x)-1 - y
+            ind = h*x + y
         return ind
 
