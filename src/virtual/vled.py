@@ -8,18 +8,6 @@ pygame.init()
 
 black = (0, 0, 0)
 
-def scale_rect(r):
-    """
-    Scale tuple with len(r) == 4 to screen
-    """
-    # Scaling
-    r = list(r)
-    r[0], r[2] = r[0] * sx, r[2] * sx
-    r[1], r[3] = r[1] * sy, r[3] * sy
-    r = tuple(r)
-    return r
-
-
 class VirtualLedScreen(abstractled.AbstractLed):
     def __init__(self, dimension=(12,10), ssize=(600, 500)):
         abstractled.AbstractLed.__init__(self, dimension)
