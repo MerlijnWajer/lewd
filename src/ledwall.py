@@ -10,12 +10,18 @@ sys.path.append('..')
 
 all_animations = True
 use_socket = False
+use_vled = False
+
+screen = None
+size = (600, 500)
 
 for arg in sys.argv[1:]:
     if arg == '-net':
         use_socket = True
     if arg == '-select':
         all_animations = False
+    if arg == '-local':
+        use_vled = True
 
 import animations
 
@@ -36,6 +42,10 @@ if use_socket:
     sys.path.append('net')
     import ledremote
     s = ledremote.RemoteLedScreen('ledwall', 8000)
+elif use_vled:
+    sys.path.append('virtual')
+    import vled
+    s = vled.VirtualLedScreen()
 else:
     import led
     s = led.LedScreen()
