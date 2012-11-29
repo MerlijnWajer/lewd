@@ -26,7 +26,7 @@ Push the current frame contents to the screen.
 
 >>> screen.push()
         """
-        self.sock.send(''.join([chr(r)+chr(g)+chr(b) for (r,g,b) in self.buf[::]]))
+        self.sock.send(''.join([chr(r)+chr(g)+chr(b) for (r,g,b) in self.buf]))
 
 if __name__ == '__main__':
     screen = RemoteLedScreen('nosejs', 8000)
