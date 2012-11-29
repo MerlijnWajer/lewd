@@ -56,13 +56,8 @@ Returns gamma-corrected colour.
         raise NotImplementedError('push not implemented')
 
     def load_data(self, data):
-        """
-
-        """
         l = max(len(data), len(self.buf))
-        self.buf[:l] = data
-        # TODO: Implement/test this
-        raise NotImplementedError('load_data not implemented')
+        self.buf[:l] = zip(*map(lambda i: [ord(_) for _ in data[i::3]], range(3)))
 
     def load_frame(self, frame):
         """

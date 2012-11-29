@@ -14,7 +14,7 @@ Usage:
         """
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
-        self.w, self.h = dim
+        abstractled.AbstractLed.__init__(self, dimension=dim)
 
         #self.sock = socket.create_connection((host, port))
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,7 +26,7 @@ Push the current frame contents to the screen.
 
 >>> screen.push()
         """
-        self.sock.send(''.join([chr(x) for x in self.buf[::]]))
+        self.sock.send(''.join([chr(r)+chr(g)+chr(b) for (r,g,b) in self.buf[::]]))
 
 if __name__ == '__main__':
     screen = RemoteLedScreen('nosejs', 8000)
