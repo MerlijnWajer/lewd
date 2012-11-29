@@ -12,9 +12,6 @@ all_animations = True
 use_socket = False
 use_vled = False
 
-screen = None
-size = (600, 500)
-
 for arg in sys.argv[1:]:
     if arg == '-net':
         use_socket = True
@@ -45,7 +42,7 @@ if use_socket:
 elif use_vled:
     sys.path.append('virtual')
     import vled
-    s = vled.VirtualLedScreen()
+    s = vled.VirtualLedScreen(ssize=(600, 500))
 else:
     import led
     s = led.LedScreen()
