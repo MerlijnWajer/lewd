@@ -32,6 +32,11 @@ Returns gamma-corrected colour.
         """
         Default __setitem__, you should just use this. Or rather, you do not
         even need to implement this.
+
+        Allows for easy frame access.
+        Use like:
+
+        >>> screen[(x, y)] = r, g, b
         """
         if type(tup) not in (tuple, list) or len(tup) != 2:
             raise ValueError("tup should be a tuple of length 2")
@@ -56,10 +61,32 @@ Returns gamma-corrected colour.
         """
         l = max(len(data), len(self.buf))
         self.buf[:l] = data
-        # TODO: Implement this
+        # TODO: Implement/test this
         raise NotImplementedError('load_data not implemented')
 
     def load_frame(self, frame):
+        """
+Load three-dimensional array to framebuffer. Does not send anything yet.
+
+>>> _ = (0,0,0)   # black
+>>> X = (0,255,0) # green
+
+>>> frame = [
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+...     [_,_,_,X,_,_,_,_,_,X,_,_,],
+...     [_,_,_,_,X,_,_,_,X,_,_,_,],
+...     [_,_,_,X,X,X,X,X,X,X,_,_,],
+...     [_,_,X,X,_,X,X,X,_,X,X,_,],
+...     [_,X,X,X,X,X,X,X,X,X,X,X,],
+...     [_,X,_,X,X,X,X,X,X,X,_,X,],
+...     [_,X,_,X,_,_,_,_,_,X,_,X,],
+...     [_,_,_,_,X,X,_,X,X,_,_,_,],
+...     [_,_,_,_,_,_,_,_,_,_,_,_,],
+... ],
+
+>>> screen.load_frame(frame) # doesn't write yet
+>>> screen.push()            # display
+        """
         for y in xrange(max(len(frame), self.h)):
             for x in xrange(max(len(frame[y]), self.w)):
                 self[ (x, y) ] = frame[y][x]
