@@ -7,7 +7,7 @@ vled, netled and led all used this module
 
 
 class AbstractLed(object):
-    def __init__(self, dimension):
+    def __init__(self, dimension, gamma=2.2):
         """
         Initialise AbstractLed object. You need to do this in your class!
         Like this:
@@ -15,6 +15,18 @@ class AbstractLed(object):
         """
         self.w, self.h = dimension
         self.buf = [(0, 0, 0)] * self.w * self.h
+        gamma = float(gamma)
+        max_gamma = 255.**gamma
+        self.gamma_map = [ int( (1 + 2 * x**gamma / (max_gamma/255.)) //2 ) for x in xrange(256) ]
+        for i, v in enumerate(self.gamma_map):
+            if v == 254:
+                self.gamma_map[i] = 253
+
+    def gamma_correct(self, colour):
+        """
+Returns gamma-corrected colour.
+        """
+        return tuple(self.gamma_map[c] for c in colour)
 
     def __setitem__(self, tup, val):
         """
@@ -33,7 +45,7 @@ class AbstractLed(object):
             raise ValueError("tup should be inside the grid:", (self.w, self.h))
 
         i = x + y * self.w
-        self.buf[i] = val
+        self.buf[i] = self.gamma_correct(val)
 
     def push(self):
         raise NotImplementedError('push not implemented')
