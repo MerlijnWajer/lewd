@@ -38,7 +38,7 @@ Initialise a LedScreen object.
         os.system("stty -F $LEDWALL_TTY " + str(brate))
 
         self.transform = Transform(*dim)
-        self.b = [0, 0, 0] * self.w * self.h
+        self.b = [(0,0,0)] * self.w * self.h
 
     def __setitem__(self, tup, val):
         abstractled.AbstractLed.__setitem__(self, tup, val)
@@ -51,8 +51,8 @@ Initialise a LedScreen object.
         for x in xrange(self.w):
             for y in xrange(self.h):
                 i = x + y * self.w
-                self.b[self.transform.inverse(x, y)] = self.buf[i]
-
+                self.b[self.transform.inverse( (x, y) )] = self.buf[i]
+        print self.b
         self.tty.write( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.b) + chr(254) )
 
 if __name__ == '__main__':
