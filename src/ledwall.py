@@ -47,7 +47,7 @@ else:
     import led
     s = led.LedScreen()
 
-fps = 25.
+fps = 50.
 metronome = sync.Metronome(fps)
 metronome.start()
 
