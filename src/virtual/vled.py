@@ -16,14 +16,21 @@ class VirtualLedScreen(abstractled.AbstractLed):
         self.sx, self.sy = float(ssize[0]) / dimension[0], \
             float(ssize[1]) / dimension[1]
 
+    def draw_led(self, surf, x, y, w, h, color):
+        hindcolor = tuple( int(((x/255.)**.6) * 20) for x in color )
+        midcolor = tuple( int(((x/255.)**.6) * 127.5) for x in color )
+        ledcolor = tuple( min(255, int(((x/255.)**.6) * 765)) for x in color )
+        for dim, bcolor in (1, hindcolor), (.4, midcolor), (.2, ledcolor): 
+            bx, by = int(x+w*(1-dim)/2), int(y+h*(1-dim)/2)
+            bw, bh = int(w*dim), int(h*dim)
+            pygame.draw.rect(surf, bcolor, pygame.Rect(bx, by, bw, bh))
+
     def draw(self):
         surf = pygame.display.get_surface()
         for x in xrange(self.w):
             for y in xrange(self. h):
                 i = x + y * self.w
-                r = (x * self.sx, y * self.sy, self.sx, self.sy)
-                r = pygame.Rect(r)
-                pygame.draw.rect(surf, self.buf[i], r)
+                self.draw_led(surf, x * self.sx, y * self.sy, self.sx, self.sy, self.buf[i])
 
     def push(self):
         self.draw()
