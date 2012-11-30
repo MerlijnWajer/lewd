@@ -9,14 +9,21 @@ keyevents = ext.input.CursesInput()
 sys.path.append('..')
 
 use_socket = False
+use_vled = False
 for arg in sys.argv[1:]:
     if arg == '-net':
         use_socket = True
+    if arg == '-local':
+        use_vled = True
 
 if use_socket:
     sys.path.append('net')
     import ledremote
     s = ledremote.RemoteLedScreen('ledwall', 8000)
+elif use_vled:
+    sys.path.append('virtual')
+    import vled
+    s = vled.VirtualLedScreen(ssize=(600, 500))
 else:
     import led
     s = led.LedScreen()
