@@ -11,7 +11,8 @@ black = (0, 0, 0)
 class VirtualLedScreen(abstractled.AbstractLed):
     def __init__(self, dimension=(12,10), ssize=(600, 500)):
         abstractled.AbstractLed.__init__(self, dimension)
-        self.screen = pygame.display.set_mode(ssize)
+        self.screen = pygame.display.set_mode(ssize,
+                pygame.RESIZABLE | pygame.DOUBLEBUF)
         self.screen.fill(black)
         self.sx, self.sy = float(ssize[0]) / dimension[0], \
             float(ssize[1]) / dimension[1]
@@ -32,7 +33,21 @@ class VirtualLedScreen(abstractled.AbstractLed):
                 i = x + y * self.w
                 self.draw_led(surf, x * self.sx, y * self.sy, self.sx, self.sy, self.buf[i])
 
+    def check_events(self):
+        for event in pygame.event.get():
+            if event.type in (pygame.QUIT,):
+                sys.exit(0)
+            if event.type in (pygame.VIDEORESIZE,):
+                self.screen = pygame.display.set_mode((event.w, event.h),
+                        pygame.RESIZABLE | pygame.DOUBLEBUF)
+                self.sx, self.sy = float(event.w) / self.w, \
+                        float(event.h) / self.h
+
+                print 'RESIZE', event.w, event.h
+
+
     def push(self):
+        self.check_events()
         self.draw()
         pygame.display.flip()
         self.screen.fill(black)
