@@ -43,7 +43,6 @@ class VirtualLedScreen(abstractled.AbstractLed):
                 self.sx, self.sy = float(event.w) / self.w, \
                         float(event.h) / self.h
 
-                print 'RESIZE', event.w, event.h
 
 
     def push(self):
