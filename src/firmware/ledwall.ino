@@ -2,7 +2,7 @@
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(1000000);
     SPI.begin();
     SPI.setBitOrder(MSBFIRST);
     SPI.setDataMode(SPI_MODE0);
