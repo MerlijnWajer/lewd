@@ -30,23 +30,28 @@ sys.path.append('..')
 
 use_socket = False
 use_vled = False
+use_spi = False
+
 for arg in sys.argv[1:]:
     if arg == '-net':
         use_socket = True
     if arg == '-local':
         use_vled = True
+    if arg == '-spi':
+        use_spi = True
 
 if use_socket:
-    sys.path.append('net')
-    import ledremote
-    s = ledremote.RemoteLedScreen('ledwall', 8000)
+    import remotescreen
+    s = remotescreen.RemoteScreen(host='10.0.20.24', port=8000)
 elif use_vled:
-    sys.path.append('virtual')
-    import vled
-    s = vled.VirtualLedScreen(ssize=(600, 500))
+    import virtualscreen
+    s = virtualscreen.VirtualScreen(windowsize=(600, 500))
+elif use_spi:
+    import spiscreen
+    s = spiscreen.SPIScreen()
 else:
-    import led
-    s = led.LedScreen()
+    import serialscreen
+    s = serialscreen.SerialScreen()
 
 WHITE, BLACK, GREY = (255,255,255), (0,0,0), (63,63,63)
 X, _ = WHITE, BLACK
