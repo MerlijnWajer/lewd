@@ -23,7 +23,7 @@ import os, socket, json
 
 import sys, os
 sys.path.append('..')
-import led, transform
+import ledspi, transform
 
 transform = transform.Transform(12, 10)
 
@@ -55,7 +55,7 @@ class SocketServer(asyncore.dispatcher):
         LEDConnection(self, conn, addr)
 
 
-screen = led.LedScreen()
+screen = ledspi.LedSPI()
 s = SocketServer(8000)
 asyncore.loop()
 

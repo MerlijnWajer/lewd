@@ -18,41 +18,57 @@
   See the file COPYING, included in this distribution,
   for details about the copyright.
 """
-import sys, os
-import socket
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '../'))
+"""Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
+
+import sys, os, time
+
+import spi
+
+from transform import Transform
 import abstractled
 
-class RemoteLedScreen(abstractled.AbstractLed):
-    def __init__(self, host, port, dim=(12,10)):
+__all__ = ['LedScreenException', 'LedScreen']
+
+
+class LedScreenException(Exception):
+    pass
+
+class LedSPI(abstractled.AbstractLed):
+    """
+The low-level LED wall screen.
+    """
+
+    def __init__(self, fname='/dev/spidev0.0', dim=(12,10), gamma=2.2):
         """
-Set Host and Port to where the net.py server is running.
+Initialise a LedScreen object.
 
-Usage:
-
->>> screen = RemoteLedScreen('wallserver', 8000)
+>>> screen = LedScreen()
         """
         if type(dim) not in (tuple, list) or len(dim) != 2:
             raise ValueError("Invalid dimension. Format is tuple(x,y)")
-        abstractled.AbstractLed.__init__(self, dimension=dim)
+        abstractled.AbstractLed.__init__(self, dimension=dim, gamma=gamma)
+        self.spi = spi.SPI(fname, 0, 1000000)
+        self.transform = Transform(*dim)
+        self.b = [(0,0,0)] * self.w * self.h
 
-        #self.sock = socket.create_connection((host, port))
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
+    def __setitem__(self, tup, val):
+        abstractled.AbstractLed.__setitem__(self, tup, val)
 
     def push(self):
-        """
-Push the current frame contents to the screen.
+        for x in xrange(self.w):
+            for y in xrange(self.h):
+                i = x + y * self.w
+                self.b[self.transform.inverse( (x, y) )] = self.buf[i]
 
->>> screen.push()
-        """
-        self.sock.send(''.join([chr(r)+chr(g)+chr(b) for (r,g,b) in self.buf]))
+        self.spi.transfer( ''.join(chr(g)+chr(r)+chr(b) for r,g,b in self.b) )
+        time.sleep(.001)
 
 if __name__ == '__main__':
-    screen = RemoteLedScreen('', 8000)
+    screen = LedScreen()
 
     for x in range(12):
         for y in range(10):
             screen[(x,y)] = 25, 25, 25
 
     screen.push()
+

@@ -31,6 +31,7 @@ sys.path.append('..')
 all_animations = True
 use_socket = False
 use_vled = False
+use_spi = False
 
 for arg in sys.argv[1:]:
     if arg == '-net':
@@ -39,6 +40,8 @@ for arg in sys.argv[1:]:
         all_animations = False
     if arg == '-local':
         use_vled = True
+    if arg == '-spi':
+        use_spi = True
 
 import animations
 
@@ -63,6 +66,9 @@ elif use_vled:
     sys.path.append('virtual')
     import vled
     s = vled.VirtualLedScreen(ssize=(600, 500))
+elif use_spi:
+    import ledspi
+    s = ledspi.LedSPI()
 else:
     import led
     s = led.LedScreen()
