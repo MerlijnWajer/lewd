@@ -59,19 +59,17 @@ else:
     ]
 
 if use_socket:
-    sys.path.append('net')
-    import ledremote
-    s = ledremote.RemoteLedScreen('ledwall', 8000)
+    import remotescreen
+    s = remotescreen.RemoteScreen(host='ledwall', port=8000)
 elif use_vled:
-    sys.path.append('virtual')
-    import vled
-    s = vled.VirtualLedScreen(ssize=(600, 500))
+    import virtualscreen
+    s = virtualscreen.VirtualScreen(windowsize=(600, 500))
 elif use_spi:
-    import ledspi
-    s = ledspi.LedSPI()
+    import spiscreen
+    s = spiscreen.SPIScreen()
 else:
-    import led
-    s = led.LedScreen()
+    import serialscreen
+    s = serialscreen.SerialScreen()
 
 fps = 50.
 metronome = sync.Metronome(fps)

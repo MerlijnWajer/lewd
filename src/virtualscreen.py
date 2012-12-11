@@ -29,13 +29,13 @@ pygame.init()
 black = (0, 0, 0)
 
 class VirtualLedScreen(abstractled.AbstractLed):
-    def __init__(self, dimension=(12,10), ssize=(600, 500)):
+    def __init__(self, dimension=(12,10), windowsize=(600, 500)):
         abstractled.AbstractLed.__init__(self, dimension)
-        self.screen = pygame.display.set_mode(ssize,
+        self.screen = pygame.display.set_mode(windowsize,
                 pygame.RESIZABLE | pygame.DOUBLEBUF)
         self.screen.fill(black)
-        self.sx, self.sy = float(ssize[0]) / dimension[0], \
-            float(ssize[1]) / dimension[1]
+        self.sx, self.sy = float(windowsize[0]) / dimension[0], \
+            float(windowsize[1]) / dimension[1]
 
     def draw_led(self, surf, x, y, w, h, color):
         hindcolor = tuple( int(((x/255.)**.6) * 20) for x in color )
@@ -51,7 +51,8 @@ class VirtualLedScreen(abstractled.AbstractLed):
         for x in xrange(self.w):
             for y in xrange(self. h):
                 i = x + y * self.w
-                self.draw_led(surf, x * self.sx, y * self.sy, self.sx, self.sy, self.buf[i])
+                self.draw_led(surf, x * self.sx, y * self.sy, self.sx, self.sy,
+                              ord(x) for x in self.buf[i*3:i*3+3])
 
     def check_events(self):
         for event in pygame.event.get():
@@ -62,8 +63,6 @@ class VirtualLedScreen(abstractled.AbstractLed):
                         pygame.RESIZABLE | pygame.DOUBLEBUF)
                 self.sx, self.sy = float(event.w) / self.w, \
                         float(event.h) / self.h
-
-
 
     def push(self):
         self.check_events()

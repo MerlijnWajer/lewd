@@ -18,13 +18,12 @@
   See the file COPYING, included in this distribution,
   for details about the copyright.
 """
-import sys, os
-import socket
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '../'))
-import abstractled
+import sys, socket
 
-class RemoteLedScreen(abstractled.AbstractLed):
-    def __init__(self, host, port, dim=(12,10)):
+import ledscreen
+
+class RemoteScreen(ledscreen.BaseScreen):
+    def __init__(self, dimension=(12,10), host, port):
         """
 Set Host and Port to where the net.py server is running.
 
@@ -32,11 +31,7 @@ Usage:
 
 >>> screen = RemoteLedScreen('wallserver', 8000)
         """
-        if type(dim) not in (tuple, list) or len(dim) != 2:
-            raise ValueError("Invalid dimension. Format is tuple(x,y)")
-        abstractled.AbstractLed.__init__(self, dimension=dim)
-
-        #self.sock = socket.create_connection((host, port))
+        ledscreen.BaseScreen.__init__(self, dimension=dimension)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((host, port))
 
@@ -46,13 +41,10 @@ Push the current frame contents to the screen.
 
 >>> screen.push()
         """
-        self.sock.send(''.join([chr(r)+chr(g)+chr(b) for (r,g,b) in self.buf]))
+        self.sock.send(self.buf)
 
 if __name__ == '__main__':
-    screen = RemoteLedScreen('', 8000)
-
-    for x in range(12):
-        for y in range(10):
-            screen[(x,y)] = 25, 25, 25
-
+    screen = RemoteScreen()
+    screen.load_frame( (x*20, y*24, (x+y)*11) for x in xrange(12) for y in xrange(10) )
     screen.push()
+

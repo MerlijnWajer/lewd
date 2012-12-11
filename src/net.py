@@ -18,41 +18,39 @@
   See the file COPYING, included in this distribution,
   for details about the copyright.
 """
-""" Module for the linear transform from 2D coordinate system to LED wall"""
-__all__ = [ 'Transform' ]
+import asyncore, socket
 
-class Transform(object):
-    """
-Transform class to transform a RGB led index to x and y plus the reverse
-transform.
+import ledspi
 
->>> t = Transform()
->>> print t.translate(10)
-    """
+class LEDConnection(asyncore.dispatcher_with_send):
 
-    def __init__(self, w=12, h=10):
-        self.w, self.h = w, h
+    def __init__(self, conn, sock, addr):
+        asyncore.dispatcher_with_send.__init__(self, sock)
+        self.data = ''
 
-    def translate(self, ind):
-        """ Transform index to x, y. Top-left = (0, 0) """
-        w, h = self.w, self.h
+    def handle_read(self):
+        data = self.recv(12*10*3)
+        self.data += data
+        if len(self.data) < 12*10*3:
+            return
 
-        x = w-1 - ind / h
+        screen.push_data(self.data[:12*10*3])
+        self.data = self.data[12*10*3:]
 
-        if x % 2 == 0:
-            y = (h - 1) - (ind % h)
-        else:
-            y = ind % h
+class SocketServer(asyncore.dispatcher):
 
-        return (w-x-1, (h - 1) -y)
+    def __init__(self, port):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.bind(('', port))
+        self.listen(5)
 
-    def inverse(self, (x, y)):
-        """ Transform (x, y) to index """
-        w, h = self.w, self.h
+    def handle_accept(self):
+        conn, addr = self.accept()
+        LEDConnection(self, conn, addr)
 
-        if x % 2 == 0:
-            ind = h*(x+1)-1 - y
-        else:
-            ind = h*x + y
-        return ind
+screen = ledspi.LedSPI()
+s = SocketServer(8000)
+asyncore.loop()
+
 

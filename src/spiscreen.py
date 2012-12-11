@@ -18,27 +18,33 @@
   See the file COPYING, included in this distribution,
   for details about the copyright.
 """
-import led
-import sync
-import sys
+"""Low-level interface to the LED Wall at TechInc. http://techinc.nl"""
+
 import time
 
-sys.path.append('..')
+import ledscreen
 
-import animations
-animations = [ x(12, 10) for x in animations.animations ]
+class SPIScreen(ledscreen.LedScreen):
+    """
+The low-level LED wall screen.
+    """
 
-s = led.LedScreen()
+    def __init__(self, dimensions=(12,10), gamma=2.2, devname='/dev/spidev0.0'):
+        """
+Initialise a SPIScreen object.
 
-metronome = sync.Metronome(fps=25.)
-metronome.start()
-current = 0
+>>> screen = SPIScreen()
+        """
+        import spi
+        ledscreen.LedScreen.__init__(self, dimension=dimensions, gamma=gamma)
+        self.spi = spi.SPI(devname, 0, 1000000)
 
-start = time.time()
-delay = 120.
+    def write_data(self, data):
+        self.spi.transfer( str(data) )
+        time.sleep(.001)
 
-while True:
-    current = int((time.time()-start)/delay) % len(animations)
-    s.push_frame(animations[current].next())
-    metronome.sync()
+if __name__ == '__main__':
+    screen = SPIScreen()
+    screen.load_frame( (x*20, y*24, (x+y)*11) for x in xrange(12) for y in xrange(10) )
+    screen.push()
 
