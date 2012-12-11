@@ -20,7 +20,7 @@
 """
 import asyncore, socket
 
-import ledspi
+import spiscreen
 
 class LEDConnection(asyncore.dispatcher_with_send):
 
@@ -49,7 +49,7 @@ class SocketServer(asyncore.dispatcher):
         conn, addr = self.accept()
         LEDConnection(self, conn, addr)
 
-screen = ledspi.LedSPI()
+screen = spiscreen.SPIScreen()
 s = SocketServer(8000)
 asyncore.loop()
 
