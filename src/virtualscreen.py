@@ -21,16 +21,16 @@
 import sys, os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '../'))
-import abstractled
+import ledscreen
 
 import pygame
 pygame.init()
 
 black = (0, 0, 0)
 
-class VirtualLedScreen(abstractled.AbstractLed):
+class VirtualScreen(ledscreen.LedScreen):
     def __init__(self, dimension=(12,10), windowsize=(600, 500)):
-        abstractled.AbstractLed.__init__(self, dimension)
+        ledscreen.BaseScreen.__init__(self, dimension)
         self.screen = pygame.display.set_mode(windowsize,
                 pygame.RESIZABLE | pygame.DOUBLEBUF)
         self.screen.fill(black)
@@ -52,7 +52,7 @@ class VirtualLedScreen(abstractled.AbstractLed):
             for y in xrange(self. h):
                 i = x + y * self.w
                 self.draw_led(surf, x * self.sx, y * self.sy, self.sx, self.sy,
-                              ord(x) for x in self.buf[i*3:i*3+3])
+                              tuple(ord(x) for x in self.buf[i*3:i*3+3]))
 
     def check_events(self):
         for event in pygame.event.get():

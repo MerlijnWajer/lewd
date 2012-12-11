@@ -23,7 +23,7 @@ import sys, socket
 import ledscreen
 
 class RemoteScreen(ledscreen.BaseScreen):
-    def __init__(self, dimension=(12,10), host, port):
+    def __init__(self, host, port, dimension=(12,10)):
         """
 Set Host and Port to where the net.py server is running.
 
