@@ -63,7 +63,7 @@ int spi_open(const char *devname, int mode, int speed, int bits_per_word)
 	return -1;
 }
 
-void init_colortab(char colortab[2048])
+void init_colortab(unsigned char colortab[6144])
 {
 	int i, r, g, b;
 
@@ -86,6 +86,14 @@ void init_colortab(char colortab[2048])
 	}
 }
 
+void apply_gamma(unsigned char colortab[6144], float gamma)
+{
+	int i;
+	for (i=0; i<6144; i++)
+		colortab[i] = (int)(pow((float)colortab[i]/256., gamma)*256);
+}
+
+
 void init_ca_map(int ca_map[2048])
 {
 	int i, val;
@@ -103,7 +111,7 @@ void fire(int fd, int width, int height, int transform_map[])
 	int w = width*2, h = height*2; int s=w*(h+1);
 	int cells[s]; memset(cells, 0, sizeof(cells));
 	int ca_map[2048]; init_ca_map(ca_map);
-	char color_tab[2048*3]; init_colortab(color_tab);
+	unsigned char color_tab[2048*3]; init_colortab(color_tab); apply_gamma(color_tab, 2.2);
 
 	int j, y, i, sum;
 	struct timeval tv; gettimeofday(&tv, NULL);
@@ -128,7 +136,7 @@ void fire(int fd, int width, int height, int transform_map[])
 		unsigned long noise = rand();
 		for (i=s-w; i<s; i++)
 		{
-			cells[i] = (noise&1) ? 210 : 0;
+			cells[i] = (noise&1) ? 221 : 0;
 			noise >>= 1;
 		}
 
