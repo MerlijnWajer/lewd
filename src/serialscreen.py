@@ -40,7 +40,7 @@ Initialise a SerialScreen object.
         self.tty = uspp.SerialPort(fname, timeout=0)
         #self.tty = uspp.SerialPort(fname, speed=brate, timeout=0)
         os.environ['LEDWALL_TTY'] = fname
-        os.system("stty -F $LEDWALL_TTY " + str(baudrate))
+        os.system('stty -F "$LEDWALL_TTY" ' + str(baudrate))
 
     def write_data(self, data):
         self.tty.write( data + chr(254) )
